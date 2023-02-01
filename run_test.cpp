@@ -6,12 +6,12 @@ using namespace std;
 using namespace cv;
 using namespace std::chrono;
 
-int main(){
+int main(int argc, char *argv[]){
     
     cout << "Loading video" << endl;
     // Create a VideoCapture object and open the input file
     // If the input is the web camera, pass 0 instead of the video file name
-    VideoCapture video("./tracking_test0.avi");  //Name must include a number
+    VideoCapture video(argv[1]);  //Name must include a number
     auto current_time = steady_clock::now();
 
     // Check if camera opened successfully
