@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Cpp
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+run_test
