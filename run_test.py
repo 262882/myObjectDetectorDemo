@@ -11,7 +11,7 @@ print("Initialising detector")
 faceDetector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 print("Load video stream")
-cap = cv2.VideoCapture('tracking_test.avi')
+cap = cv2.VideoCapture('tracking_test0.avi')
 font = cv2.FONT_HERSHEY_DUPLEX
 color = (0, 0, 0) 
  
