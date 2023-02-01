@@ -3,6 +3,7 @@
 
 import cv2
 import time
+import sys
 
 print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
@@ -11,7 +12,7 @@ print("Initialising detector")
 faceDetector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 print("Load video stream")
-cap = cv2.VideoCapture('tracking_test0.avi')
+cap = cv2.VideoCapture(sys.argv[1])
 font = cv2.FONT_HERSHEY_DUPLEX
 color = (0, 0, 0) 
  
