@@ -44,6 +44,9 @@ int main(){
         // Perform detection
         vector<Rect> faces;
         detector.detectMultiScale( frame_gray, faces,1.1,10);
+        for(size_t i = 0; i < faces.size(); i++) {
+            rectangle(frame, faces[i], Scalar(0, 255, 0), 3);
+            }
 
         // Record performance
         int perform_fps =  1/(duration<double, std::milli>(steady_clock::now()-current_time).count()/1e+3);
