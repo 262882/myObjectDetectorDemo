@@ -9,7 +9,7 @@ print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
 
 print("Initialising detector")
-faceDetector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+faceDetector = cv2.CascadeClassifier('./net/haarcascade_frontalface_default.xml')
 
 print("Load video stream")
 cap = cv2.VideoCapture(sys.argv[1])

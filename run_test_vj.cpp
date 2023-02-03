@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
     // Load pretrained XML classifier
     CascadeClassifier detector; 
     double scale=1;
-    detector.load("haarcascade_frontalface_default.xml") ; 
+    detector.load("./net/haarcascade_frontalface_default.xml") ; 
 
     // Main loop
     while(true){
