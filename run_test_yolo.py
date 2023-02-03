@@ -6,25 +6,22 @@ import time
 import sys
 import numpy as np
 
-print()
 print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
 
 print("Initialising detector")
 detector = cv2.dnn.readNetFromDarknet('./net/yolov3-tiny.cfg', './net/yolov3-tiny.weights')
 detector.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+detector.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 ln = detector.getLayerNames()  # layer names
-ln = [ln[i - 1] for i in detector.getUnconnectedOutLayers()]  #YOLOv3 is ['yolo_16', 'yolo_23']
+ln = [ln[i - 1] for i in detector.getUnconnectedOutLayers()]  #YOLOv3 layers ares ['yolo_16', 'yolo_23']
 print("Detector ready")
 
-# Run from GPU
-#detector.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
-#detector.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
-
-print("Load video stream")
+print("Loading video stream")
 cap = cv2.VideoCapture(sys.argv[1])
 font = cv2.FONT_HERSHEY_DUPLEX
 color = (0, 0, 0) 
+print("Loaded video stream")
  
 # Read until video is completed
 while(cap.isOpened()):
@@ -33,9 +30,9 @@ while(cap.isOpened()):
   ret, frame = cap.read()
 
   if ret == True:
-    blob = cv2.dnn.blobFromImage(frame, 1/255.0,
-                                (160, 160), # Resolution multiple of 32
-                                swapRB=True, crop=False) 
+    blob = cv2.dnn.blobFromImage(frame, scalefactor=1/255,
+                                size = (416, 416), # Resolution multiple of 32
+                                swapRB=True, crop=True) 
     detector.setInput(blob)
     layer_output = detector.forward(ln)
 
@@ -45,13 +42,17 @@ while(cap.isOpened()):
     frame = cv2.putText(frame, str(round(rate_fps))+" FPS", ((frame.shape[1]//10)*7,(frame.shape[0]//10)*9), font, 1, color)
 
     # Add bounding boxes https://thinkinfi.com/yolo-object-detection-using-python-opencv/
+    positive_predict = False  # Only consider the first prediction made
     for predictions in layer_output:
       for prediction in predictions:
           box = prediction[:4]*np.array([frame.shape[1], frame.shape[0], frame.shape[1], frame.shape[0]])
-          (x, y, w, h) = box.astype("int")
-          print(prediction)
-          #if prediction[7]>0.1:
-          frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+          (x, y, w, h) = np.copy(box).astype("int")
+          if prediction[5]>0.2: # Only consider predictions of people
+            frame = cv2.rectangle(frame, (x-w//2, y-h//2), (x + w//2, y + h//2), (0, 255, 0), 3)
+            positive_predict = True
+            break   
+      if positive_predict == True:
+        break
 
     # Display the resulting frame
     cv2.imshow('Frame',frame)
