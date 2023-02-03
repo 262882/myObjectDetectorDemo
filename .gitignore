@@ -134,3 +134,6 @@ CMakeFiles/
 Makefile
 cmake_install.cmake
 run_test
+
+# Network weights
+net/
