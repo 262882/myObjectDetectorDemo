@@ -33,7 +33,7 @@ while cap.isOpened():
                                       size = (300, 300), # Resolution multiple of 32
                                       swapRB=True, crop=True)
         detector.setInput(blob)
-        layer_output = detector.forward() #ln)
+        layer_output = detector.forward()
 
           # Record performance
         rate_fps = 1/(time.perf_counter()-run_time)
@@ -48,8 +48,6 @@ while cap.isOpened():
         for detection in layer_output[0,0]:
             confidence = detection[2] 
             class_id = int(detection[1])
-            if class_id !=0:
-                print(class_id)
             if confidence > 0.2 and class_id == 15:  # Threshold       
                  
                 # Object location 
