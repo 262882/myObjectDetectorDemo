@@ -7,19 +7,12 @@ import cv2
 import numpy as np
 import onnxruntime as rt
 
-def _normalize(img): 
-    img = img.astype(np.float32) / 255
-    MEAN = np.array([0.406, 0.456, 0.485], dtype=np.float32)
-    STD = np.array([0.225, 0.224, 0.229], dtype=np.float32)
-    img = img - MEAN / STD
-    return img
-
 print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
 
 print("Initialising detector")
 providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if rt.get_device()=='GPU' else ['CPUExecutionProvider']
-session = rt.InferenceSession('./net/nanodet.onnx', providers=providers)
+session = rt.InferenceSession('./net/yolox_nano.onnx', providers=providers)
 outname = [i.name for i in session.get_outputs()] 
 inname = [i.name for i in session.get_inputs()]
 print("Detector ready")
@@ -37,11 +30,10 @@ while cap.isOpened():
     ret, frame = cap.read()
 
     if ret:
-        blob = cv2.dnn.blobFromImage(_normalize(frame), #scalefactor=1/255,
-                                        size = (320, 320), # Resolution multiple of 32
-                                        swapRB=True, crop=False) 
+        blob = cv2.dnn.blobFromImage(frame, size = (416, 416), # Resolution multiple of 32
+                                     swapRB=True, crop=False) 
         inp = {inname[0]:blob}
-        layer_output = session.run(outname, inp)  # [(HxW)xC,(HxW)xstride] - Heatmaps                         
+        layer_output = session.run(outname, inp)[0][0]  # Assume batch size of 1                 
 
         # Record performance
         rate_fps = 1/(time.perf_counter()-run_time)
@@ -51,27 +43,28 @@ while cap.isOpened():
 
         # Perform inference
         coco_ind = 0  # Person
-        stride = 8  # Stride: 8,16,32
-        cell_count = 320//stride
+        stride = 16  # Stride: 8,16,32
+        cell_count = 416//stride
 
-        max_inds = np.argwhere(layer_output[0][:,coco_ind]>0.2)
+        max_inds = np.argwhere(layer_output[(416//8)**2:(416//8)**2+cell_count**2,coco_ind+5]>0.5)
         
         for ind in max_inds:
-
+            ind = ind - (416//8)**2
             # Find cell representation
             x = (ind%(cell_count**2))%cell_count
             y = (ind%(cell_count**2))//cell_count
             
             # Find max prediction as result
-            box = np.max(np.reshape(layer_output[3][ind],(4,8)),axis=1)
+            p_x, p_y, p_w, p_h = layer_output[ind,:4][0]
 
             # Find pixel representation
             x = int((x+0.5)/cell_count*640)
             y = int((y+0.5)/cell_count*480)
-            l,t,r,b = (np.copy(box)*stride*np.array([640,480,640,480])/320).astype("int")  # What is the scale here?
+            l_w, l_h = (stride*np.exp(np.array([p_w, p_h]))).astype("int")
+            l_x, l_y = np.array([p_x,p_y]).astype("int")
 
-            frame = cv2.circle(frame, (x,y), 10,  (0, 255, 0), 3)            
-            frame = cv2.rectangle(frame, (x-l, y-t), (x+r, y+b),(0, 255, 0), 3)
+            frame = cv2.circle(frame, (x+l_x,y+l_y), 10,  (0, 255, 0), 3)            
+            frame = cv2.rectangle(frame, (x-l_w//2, y-l_h//2), (x+l_w//2, y+l_h//2),(0, 255, 0), 3)
         
         # Display the resulting frame
         cv2.imshow('Frame',frame)
