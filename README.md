@@ -1,8 +1,8 @@
 # myDetectorEvaluation
 
-Apply the Viola Jones and Tiny Yolov3 detectors on an input video to detect human faces. A frames per second measurement is reported to evaluate realtime performance. Both Python and c++ implementations exist for comparrison
+Apply various object detectors on an input video to detect people. A frames per second measurement is reported to evaluate realtime performance. NMS and a measure of quality of inference is skipped as the intension is only to get a feel for the realtime performance and methods of deployment. Both Python and c++ implementations for VJ and Tiny yolo exist for comparrison.
 
-## OpenCV installation for Ubuntu via repo
+## OpenCV installation for Ubuntu via repo:
 ```
 sudo apt update
 sudo apt install libopencv-dev python3-opencv
