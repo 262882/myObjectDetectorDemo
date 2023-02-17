@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
         // Preprocess
         cv::Mat blob;
         cv::dnn::blobFromImage(frame, blob, 1./255., cv::Size(416, 416),
-                               cv::Scalar(), true, true);
+                               cv::Scalar(), true, false);
 
         // Perform detection
         std::vector<cv::Mat> layer_outputs;

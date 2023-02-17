@@ -4,6 +4,14 @@
 import time
 import sys
 import cv2
+import numpy as np
+
+def _normalize(img): 
+    img = img.astype(np.float32) / 255
+    MEAN = np.array([0.406, 0.456, 0.485], dtype=np.float32)
+    STD = np.array([0.225, 0.224, 0.229], dtype=np.float32)
+    img = img - MEAN / STD
+    return img
 
 print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
@@ -28,9 +36,10 @@ while cap.isOpened():
     ret, frame = cap.read()
 
     if ret:
-        blob = cv2.dnn.blobFromImage(frame, scalefactor=1/255,
-                                     size=(300, 300), # Resolution multiple of 32
-                                     swapRB=True, crop=True)
+        blob = cv2.dnn.blobFromImage(frame, scalefactor=0.007843,
+                                     size=(300, 300), 
+                                     mean=(127.5,127.5,127.5),
+                                     swapRB=True, crop=False)
         detector.setInput(blob)
         layer_output = detector.forward()
 
@@ -47,7 +56,7 @@ while cap.isOpened():
         for detection in layer_output[0, 0]:
             confidence = detection[2]
             class_id = int(detection[1])
-            if confidence > 0.2 and class_id == 15:  # Threshold
+            if confidence > 0.01 and class_id == 15:  # Consider only people
 
                 # Object location
                 xLeftBottom = int(detection[3] * cols)

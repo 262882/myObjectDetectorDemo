@@ -58,13 +58,13 @@ while cap.isOpened():
             p_x, p_y, p_w, p_h = layer_output[ind,:4][0]
 
             # Find pixel representation
-            x = int((x+0.5)/cell_count*640)
-            y = int((y+0.5)/cell_count*480)
+            x = int((x+0.5)/cell_count*frame.shape[1])
+            y = int((y+0.5)/cell_count*frame.shape[0])
             l_w, l_h = (stride*np.exp(np.array([p_w, p_h]))).astype("int")
             l_x, l_y = np.array([p_x,p_y]).astype("int")
 
             frame = cv2.circle(frame, (x+l_x,y+l_y), 10,  (0, 255, 0), 3)            
-            frame = cv2.rectangle(frame, (x-l_w//2, y-l_h//2), (x+l_w//2, y+l_h//2),(0, 255, 0), 3)
+            frame = cv2.rectangle(frame, (x-l_w//2, y-l_h//2), (x+l_w//2, y+l_h//2), (0, 255, 0), 3)
         
         # Display the resulting frame
         cv2.imshow('Frame',frame)

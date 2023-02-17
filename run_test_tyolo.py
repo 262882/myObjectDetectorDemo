@@ -32,7 +32,7 @@ while cap.isOpened():
     if ret:
         blob = cv2.dnn.blobFromImage(frame, scalefactor=1/255,
                                       size = (416, 416), # Resolution multiple of 32
-                                      swapRB=True, crop=True)
+                                      swapRB=True, crop=False)
         detector.setInput(blob)
         layer_output = detector.forward(ln)
 

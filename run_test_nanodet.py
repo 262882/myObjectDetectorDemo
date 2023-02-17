@@ -66,9 +66,9 @@ while cap.isOpened():
             box = np.max(np.reshape(layer_output[3][ind],(4,8)),axis=1)
 
             # Find pixel representation
-            x = int((x+0.5)/cell_count*640)
-            y = int((y+0.5)/cell_count*480)
-            l,t,r,b = (np.copy(box)*stride*np.array([640,480,640,480])/320).astype("int")  # What is the scale here?
+            x = int((x+0.5)/cell_count*frame.shape[1])
+            y = int((y+0.5)/cell_count*frame.shape[0])
+            l,t,r,b = (np.copy(box)*stride*frame.shape[0]/320).astype("int")  # What is the scale here?
 
             frame = cv2.circle(frame, (x,y), 10,  (0, 255, 0), 3)            
             frame = cv2.rectangle(frame, (x-l, y-t), (x+r, y+b),(0, 255, 0), 3)
