@@ -18,8 +18,11 @@ print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
 
 print("Initialising detector")
-providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if rt.get_device()=='GPU' else ['CPUExecutionProvider']
-session = rt.InferenceSession('./net/nanodet.onnx', providers=providers)
+providers = ['CPUExecutionProvider']
+sess_options = rt.SessionOptions()  # https://onnxruntime.ai/docs/performance/tune-performance.html
+sess_options.intra_op_num_threads = 1
+sess_options.execution_mode = rt.ExecutionMode.ORT_SEQUENTIAL
+session = rt.InferenceSession('./net/nanodet.onnx', sess_options=sess_options, providers=providers)
 outname = [i.name for i in session.get_outputs()] 
 inname = [i.name for i in session.get_inputs()]
 print("Detector ready")
