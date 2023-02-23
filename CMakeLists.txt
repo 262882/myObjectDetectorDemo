@@ -1,8 +1,11 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.12)
 project( myDetectorEvaluation )
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
+
 add_executable( run_test_vj run_test_vj.cpp )
 target_link_libraries( run_test_vj ${OpenCV_LIBS} )
+target_compile_options( run_test_vj PRIVATE "-Wall" "-O0")
 add_executable( run_test_tyolo run_test_tyolo.cpp )
 target_link_libraries( run_test_tyolo ${OpenCV_LIBS} )
+target_compile_options( run_test_tyolo PRIVATE "-Wall" "-O3")
