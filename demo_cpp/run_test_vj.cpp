@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
     // Load pretrained XML classifier
     cv::CascadeClassifier detector;
-    detector.load("./net/haarcascade_frontalface_default.xml");
+    detector.load("../models/haarcascade_frontalface_default.xml");
 
     // Main loop
     while (true) {

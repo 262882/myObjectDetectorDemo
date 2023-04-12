@@ -22,8 +22,8 @@ int main(int argc, char *argv[]) {
 
     // Load pretrained tiny yolo
     cv::dnn::Net detector;
-    detector = cv::dnn::readNetFromDarknet("./net/yolov3-tiny.cfg",
-                                           "./net/yolov3-tiny.weights");
+    detector = cv::dnn::readNetFromDarknet("../models/yolov3-tiny.cfg",
+                                           "../models/yolov3-tiny.weights");
     std::vector<cv::String> outLayers;
     std::vector<int> outLayers_ind = detector.getUnconnectedOutLayers();
     std::vector<cv::String> layersNames = detector.getLayerNames();
