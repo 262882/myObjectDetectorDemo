@@ -10,7 +10,7 @@ print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
 
 print("Initialising detector")
-detector = cv2.dnn.readNetFromDarknet('./net/yolov3-tiny.cfg', './net/yolov3-tiny.weights')
+detector = cv2.dnn.readNetFromDarknet('../models/yolov3-tiny.cfg', '../models/yolov3-tiny.weights')
 detector.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 detector.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 ln = detector.getLayerNames()  # layer names

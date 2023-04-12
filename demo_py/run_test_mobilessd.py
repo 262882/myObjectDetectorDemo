@@ -17,8 +17,8 @@ print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
 
 print("Initialising detector")
-detector = cv2.dnn.readNetFromCaffe('net/MobileNetSSD_deploy.prototxt',
-                                    'net/MobileNetSSD_deploy.caffemodel')
+detector = cv2.dnn.readNetFromCaffe('../models/MobileNetSSD_deploy.prototxt',
+                                    '../models/MobileNetSSD_deploy.caffemodel')
 detector.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 detector.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 print("Detector ready")
