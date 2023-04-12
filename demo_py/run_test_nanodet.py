@@ -73,7 +73,7 @@ while cap.isOpened():
             y = int((y+0.5)/cell_count*frame.shape[0])
             l,t,r,b = (np.copy(box)*stride*frame.shape[0]/320).astype("int")  # What is the scale here?
 
-            frame = cv2.circle(frame, (x,y), 10,  (0, 255, 0), 3)            
+            #frame = cv2.circle(frame, (x,y), 10,  (0, 255, 0), 3)            
             frame = cv2.rectangle(frame, (x-l, y-t), (x+r, y+b),(0, 255, 0), 3)
         
         # Display the resulting frame
