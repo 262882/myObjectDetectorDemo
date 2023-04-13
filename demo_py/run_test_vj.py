@@ -4,12 +4,13 @@
 import sys
 import time
 import cv2
+import numpy as np
 
 print("Welcome to the Object Detector Tester")
 run_time = time.perf_counter()
 
 print("Initialising detector")
-faceDetector = cv2.CascadeClassifier('../models/haarcascade_frontalface_default.xml')
+faceDetector = cv2.CascadeClassifier('../models/ballcascade_12_0.2.xml') #haarcascade_frontalface_default.xml')
 
 print("Load video stream")
 cap = cv2.VideoCapture(sys.argv[1])
@@ -23,10 +24,21 @@ while cap.isOpened():
     ret, frame = cap.read()
 
     if ret:
-        frameGray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         scale_factor = 1.1  # how much the image size is reduced at each image scale
         min_neighbours = 10 # how many neighbors each candidate rectangle should have to retain it
-        detections = faceDetector.detectMultiScale(frameGray, scale_factor, min_neighbours)
+
+        # process images
+        edge = True
+        grey_img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if (edge):
+            ddepth = cv2.CV_16S
+            kernel_size = 3
+            edge_img = cv2.Laplacian(grey_img, ddepth, ksize=kernel_size)
+            final = np.array((edge_img>100)*255, dtype='uint8')
+        else:
+            final = grey_img
+
+        detections = faceDetector.detectMultiScale(final, scale_factor, min_neighbours)
 
         # Record performance
         rate_fps = 1/(time.perf_counter()-run_time)
